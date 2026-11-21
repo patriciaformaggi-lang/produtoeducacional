@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Instrumento de Aplicação/Avaliação do Produto Educacional em Docentes da Universidade</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--verde:#1a5c2e;--verde-medio:#2d7a42;--verde-claro:#4a9e5c;--verde-suave:#e8f4eb;--verde-borda:#b8ddc0;--dourado:#c9a84c;--dourado-claro:#e8d08a;--cinza-escuro:#2a2a2a;--cinza-medio:#555;--cinza-claro:#f5f5f0;--branco:#fdfcf8;--sombra:0 4px 24px rgba(26,92,46,0.10)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Source Serif 4',Georgia,serif;font-size:15px;line-height:1.7;color:var(--cinza-escuro);background:linear-gradient(135deg,#f0f7f2 0%,#fdfcf8 50%,#f5f0e8 100%);min-height:100vh}
+h1,h2,h3{font-family:'Playfair Display',Georgia,serif;color:var(--verde);line-height:1.3}
+h1{font-size:26px;margin-bottom:10px}h2{font-size:21px;margin-bottom:8px}h3{font-size:16px;margin:22px 0 6px}
+p{color:var(--cinza-medio);text-align:justify;margin-bottom:12px}
+a{color:var(--verde-medio)}
+:focus-visible{outline:3px solid var(--dourado);outline-offset:2px}
+#prog{position:fixed;top:0;left:0;right:0;z-index:50;background:var(--branco);box-shadow:0 2px 10px rgba(0,0,0,.08);padding:10px 20px 8px}
+.prog-in{max-width:760px;margin:0 auto}
+.prog-top{display:flex;justify-content:space-between;gap:12px;font-family:'Playfair Display',serif;font-size:13px;color:var(--verde);margin-bottom:6px}
+.prog-top span:first-child{font-weight:700}
+.bar{height:6px;background:var(--verde-suave);border-radius:6px;overflow:hidden}
+#bar{height:100%;width:0;background:linear-gradient(90deg,var(--verde),var(--dourado));transition:width .5s ease}
+#dots{display:flex;justify-content:space-between;margin-top:6px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--verde-borda);transition:all .3s}
+.dot.on{background:var(--verde);transform:scale(1.4)}.dot.ok{background:var(--dourado)}
+.wrap{max-width:760px;margin:0 auto;padding:100px 16px 48px}
+.card{position:relative;background:var(--branco);border:1px solid var(--verde-borda);border-radius:18px;box-shadow:var(--sombra);padding:44px 48px;overflow:hidden}
+.card::before{content:"";position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,var(--verde),var(--dourado))}
+.form-page{display:none}
+.form-page.active{display:block;animation:fadeSlide .4s ease}
+@keyframes fadeSlide{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.form-page.active{animation:none}#bar{transition:none}}
+.logos{display:flex;justify-content:center;align-items:center;gap:28px;margin-bottom:22px;flex-wrap:wrap}
+.logos img{max-height:70px;max-width:180px;object-fit:contain}
+.ph{display:inline-flex;align-items:center;justify-content:center;min-width:90px;height:64px;padding:0 14px;border:2px dashed var(--verde-borda);border-radius:10px;font-family:'Playfair Display',serif;font-weight:700;color:var(--verde)}
+.badge{display:inline-block;background:var(--verde-suave);border:1px solid var(--verde-borda);color:var(--verde);font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:4px 14px;border-radius:30px;margin-bottom:14px}
+.center{text-align:center}.center p{text-align:center}
+hr.div{border:0;height:2px;background:linear-gradient(90deg,var(--verde-borda),transparent);margin:18px 0 22px}
+.alert-box{background:var(--verde-suave);border-left:4px solid var(--verde);border-radius:0 10px 10px 0;padding:14px 18px;margin:20px 0}
+.alert-box p:last-child{margin-bottom:0}.alert-box strong{color:var(--verde)}
+.q{margin:0 0 26px;padding:6px 8px;border-radius:10px;border:0;min-width:0}
+.q.erro{background:#fdeeee;outline:2px solid #c0392b}
+.q legend,.q>label.t{display:block;font-weight:600;color:var(--cinza-escuro);margin-bottom:10px;padding:0}
+.q .sub{font-weight:400;color:var(--cinza-medio);display:block;margin-bottom:6px}
+input[type=text],input[type=number],input[type=date],textarea,select{width:100%;font:inherit;color:var(--cinza-escuro);background:#fff;border:1.5px solid var(--verde-borda);border-radius:10px;padding:10px 14px;transition:border .2s,box-shadow .2s}
+input:focus,textarea:focus,select:focus{outline:0;border-color:var(--verde-medio);box-shadow:0 0 0 3px rgba(45,122,66,.10)}
+textarea{min-height:110px;resize:vertical}
+.cond{margin-top:12px}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{position:relative;display:flex;align-items:center;gap:12px;background:var(--verde-suave);border:1.5px solid var(--verde-borda);border-radius:10px;padding:10px 14px;cursor:pointer;transition:all .2s}
+.opt:hover{border-color:var(--verde-medio)}
+.opt input,.chip input,.cel input{position:absolute;opacity:0;width:1px;height:1px}
+.opt .b{flex:none;width:20px;height:20px;border-radius:50%;border:2px solid var(--verde-claro);background:#fff;transition:all .2s}
+.opt:has(input:checked){background:#c6e6ce;border-color:var(--verde);font-weight:600}
+.opt input:checked+.b{background:var(--verde);border-color:var(--verde);box-shadow:inset 0 0 0 4px #fff}
+.opt:has(input:focus-visible),.chip:has(input:focus-visible),.cel:has(input:focus-visible){outline:3px solid var(--dourado);outline-offset:2px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{cursor:pointer}
+.chip span{display:inline-block;padding:7px 16px;border-radius:30px;border:1.5px solid var(--verde-borda);background:var(--verde-suave);transition:all .2s}
+.chip:hover span{border-color:var(--verde-medio)}
+.chip input:checked+span{background:var(--verde);border-color:var(--verde);color:#fff}
+.tw{overflow-x:auto;border-radius:10px;border:1px solid var(--verde-borda)}
+table{width:100%;border-collapse:collapse;min-width:560px}
+th{background:var(--verde);color:#fff;font-family:'Playfair Display',serif;font-size:13px;font-weight:600;padding:10px 8px;text-align:center}
+th:first-child{text-align:left;padding-left:14px}
+td{padding:10px 8px;border-top:1px solid var(--verde-borda);text-align:center}
+td:first-child{text-align:left;padding-left:14px;width:38%}
+tr.q:hover td,tbody tr:hover td{background:var(--verde-suave)}
+tr.q.erro td{background:#fdeeee}
+.cel{position:relative;display:inline-block;cursor:pointer}
+.cel .c{display:block;width:22px;height:22px;border-radius:50%;border:2px solid var(--verde-claro);background:#fff;color:#fff;font-size:13px;line-height:18px;transition:all .2s}
+.cel input:checked+.c{background:var(--verde);border-color:var(--verde)}
+.cel input:checked+.c::after{content:"✓"}
+.nav{display:flex;justify-content:space-between;gap:12px;margin-top:30px;flex-wrap:wrap}
+button{font-family:'Playfair Display',serif;font-weight:600;font-size:15px;border-radius:40px;padding:12px 30px;cursor:pointer;transition:all .2s}
+.btn-primary{background:linear-gradient(135deg,var(--verde),var(--verde-medio));color:#fff;border:0;box-shadow:0 4px 14px rgba(26,92,46,.25)}
+.btn-primary:hover{transform:translateY(-2px)}
+.btn-secondary{background:transparent;color:var(--verde);border:1.5px solid var(--verde-borda)}
+.btn-secondary:hover{border-color:var(--verde-medio)}
+.btn-accept{background:linear-gradient(135deg,var(--dourado),var(--dourado-claro));color:var(--verde);border:0;box-shadow:0 4px 14px rgba(201,168,76,.35)}
+.btn-accept:hover{transform:translateY(-2px)}
+button:disabled{opacity:.6;cursor:wait;transform:none}
+.msg{display:none;margin-top:18px;background:#fdeeee;border-left:4px solid #c0392b;border-radius:0 10px 10px 0;padding:12px 16px;color:#8e2a1e}
+.msg.show{display:block}
+.msg button{margin-top:8px;padding:6px 18px;font-size:13px;background:#fff;color:#8e2a1e;border:1.5px solid #c0392b}
+.ok-ic{width:84px;height:84px;margin:0 auto 18px;border-radius:50%;background:var(--verde);color:#fff;font-size:44px;line-height:84px;text-align:center;box-shadow:0 6px 20px rgba(26,92,46,.3)}
+.tcle{max-height:none}
+.inl{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px}.inl input{flex:1;min-width:220px}
+@media(max-width:580px){.card{padding:28px 18px}h1{font-size:22px}.nav button{flex:1}}
+</style>
+</head>
+<body>
+<div id="prog" aria-label="Progresso do formulário">
+  <div class="prog-in">
+    <div class="prog-top"><span>Avaliação do Produto Educacional</span><span id="etapa" aria-live="polite"></span></div>
+    <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"><div id="bar"></div></div>
+    <div id="dots"></div>
+  </div>
+</div>
+<main class="wrap"><div class="card" id="app"></div></main>
+
+<script>
+/* ===== CONFIGURAÇÃO (troque aqui) ===== */
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzhnGxH38SWqn4LmGBjoV_1KPEqLUpjv9L7oEw990ensHrU2K6oBARt0gRrgoK1HeOzJw/exec';
+const LOGO_1_ID = 'ID_DA_LOGO_1';   // ID do arquivo no Google Drive
+const LOGO_2_ID = 'ID_DA_LOGO_2';
+const SIGLA_1 = 'UENP', SIGLA_2 = 'PPGEN'; // texto do placeholder se a logo não carregar
+
+/* ===== CONTEÚDO (texto do .docx) ===== */
+const ESC4 = ['Sim','Parcialmente','Não','Não foi possível avaliar'];
+const SEC = [
+{n:1,t:'POTENCIAL FORMATIVO E CONSTITUIÇÃO DA IDENTIDADE DOCENTE',it:[
+ {y:'l',id:'1.1',k:'s1_q1_1',q:'As propostas do Guia Didático apresentam potencial para favorecer reflexões sobre a constituição da identidade docente dos licenciandos em Pedagogia?',o:ESC4,j:'Justifique:'},
+ {y:'m',id:'1.2',k:'s1_q1_2',q:'As propostas do Guia Didático favorecem a reflexão sobre os seguintes aspectos?',h:'Aspectos',r:['Mobilização dos saberes docentes nas práticas de ensino','Trabalho do professor e fundamentos das decisões pedagógicas','Experiências formativas dos licenciandos, especialmente aquelas vivenciadas no Estágio Supervisionado']},
+ {y:'t',k:'s1_comentarios',q:'Comentários e sugestões:'}]},
+{n:2,t:'ANÁLISE DO CONTEÚDO',it:[
+ {y:'l',id:'2.1',k:'s2_q2_1',q:'Os fundamentos teóricos e as orientações pedagógicas apresentados no Guia Didático são claros e compreensíveis?',o:['Muito claros','Claros','Parcialmente claros','Pouco claros','Não foi possível avaliar']},
+ {y:'l',id:'2.2',k:'s2_q2_2',q:'Os conteúdos abordados no Guia Didático são pertinentes aos seus objetivos e à formação inicial para a docência?',o:['Muito pertinentes','Pertinentes','Parcialmente pertinentes','Pouco pertinentes','Não foi possível avaliar']},
+ {y:'t',k:'s2_comentarios',q:'Comentários e sugestões de aprimoramento:'}]},
+{n:3,t:'ANÁLISE DAS PROPOSTAS FORMATIVAS',it:[
+ {y:'l',id:'3.1',s:'Articulação teoria–prática',k:'s3_q3_1',q:'As atividades propostas pelo Produto oferecem possibilidades de articulação entre conhecimentos teóricos e situações da prática docente?',o:ESC4,j:'Justifique sua resposta:'},
+ {y:'m',id:'3.2',k:'s3_q3_2',q:'Considerando os objetivos do Guia Didático, avalie os seguintes aspectos das atividades propostas:',h:'Critérios',r:['São coerentes com os objetivos formativos do Guia Didático','Favorecem a reflexão sobre as decisões pedagógicas e seus fundamentos','Possibilitam a análise de situações relacionadas à prática docente']},
+ {y:'l',id:'3.3',s:'Mediação formativa',k:'s3_q3_3',q:'As orientações destinadas ao professor formador são claras e oferecem subsídios para a mediação das atividades e para a reflexão dos licenciandos sobre os saberes mobilizados nas decisões pedagógicas?',o:ESC4,j:'Justifique sua resposta:'},
+ {y:'t',id:'3.4',k:'s3_q3_4',q:'Considerando sua experiência na formação inicial de professores, quais atividades do Guia Didático apresentam maior potencial formativo? Justifique.'},
+ {y:'t',k:'s3_comentarios',q:'Comentários e sugestões de aprimoramento das propostas formativas:'}]},
+{n:4,t:'',it:[
+ {y:'m',id:'4.1',k:'s4_q4_1',q:'Considerando a organização do Guia Didático, avalie os seguintes aspectos:',h:'Critérios',r:['Os conteúdos, fundamentos e atividades estão organizados de maneira lógica.','A sequência das atividades apresenta coerência com os objetivos formativos das unidades.','A organização do material facilita a localização das atividades e das orientações destinadas ao professor formador.']},
+ {y:'t',k:'s4_comentarios',q:'Comentários e sugestões de aprimoramento:'}]},
+{n:5,t:'APRESENTAÇÃO VISUAL',it:[
+ {y:'l',id:'5.1',k:'s5_q5_1',q:'Como você avalia a organização visual do Guia Didático quanto à facilidade de leitura, à localização das atividades e à compreensão das orientações pedagógicas?',o:['Adequada','Parcialmente adequada','Inadequada','Não foi possível avaliar']},
+ {y:'t',k:'s5_sugestoes',q:'Sugestões para aprimoramento do layout, design e organização visual:'}]},
+{n:6,t:'VIABILIDADE DE USO',it:[
+ {y:'l',id:'6.1',k:'s6_q6_1',q:'Considerando os objetivos e a organização do Guia Didático, você identifica possibilidades de utilização do material na formação inicial de professores?',o:['Sim','Sim, com ajustes','Não','Não foi possível avaliar'],j:'Justifique sua resposta:'},
+ {y:'c',id:'6.2',k:'s6_q6_2',q:'Em quais contextos formativos você considera que as propostas do Guia Didático poderiam ser utilizadas ou adaptadas? Assinale as alternativas pertinentes.',o:['Estágio Supervisionado','Disciplinas de Didática e Metodologias de Ensino','Projetos de extensão relacionados à formação docente','Programa Institucional de Bolsa de Iniciação à Docência (PIBID)','Outras atividades de formação inicial de professores']},
+ {y:'t',k:'s6_q6_2_just',q:'Justifique, indicando possíveis formas de utilização ou adaptações necessárias.'}]},
+{n:7,t:'SUGESTÕES DE APRIMORAMENTO DO PRODUTO EDUCACIONAL',it:[
+ {y:'l',id:'7.1',k:'s7_q7_1',q:'Considerando a análise do Guia Didático e as discussões realizadas durante a oficina formativa, você identifica outros aspectos que poderiam ser aprimorados no material?',o:['Sim','Não'],j:'Em caso afirmativo, apresente suas sugestões:',jOn:'Sim'}]},
+{n:8,t:'APRECIAÇÃO GERAL DO PRODUTO EDUCACIONAL',it:[
+ {y:'t',id:'8.1',k:'s8_apreciacao',q:'Considerando o Guia Didático em sua totalidade e as discussões realizadas durante a oficina formativa, apresente sua apreciação geral sobre o material, destacando suas contribuições e possíveis limitações para a formação inicial de professores, especialmente no contexto do Estágio Supervisionado.',l:'Apreciação:'}]}
+];
+const ATIV = ['Orientação de Estágio Supervisionado','Docência em disciplinas de Didática e Metodologias de Ensino','Coordenação ou participação em projetos de extensão','Atuação no Programa Institucional de Bolsa de Iniciação à Docência (PIBID)','Docência em outros componentes curriculares do curso de Pedagogia','Outras atividades relacionadas à formação docente'];
+const OUTRAS = ATIV[5];
+
+/* ===== ESTADO ===== */
+const S = {};            // respostas
+const ORDEM = [];        // chaves na ordem do formulário
+const ROT = {};          // chave -> rótulo legível
+const reg = (k, l) => { if (!ORDEM.includes(k)) { ORDEM.push(k); ROT[k] = l; } };
+const cut = s => s.length > 110 ? s.slice(0, 107) + '…' : s;
+
+/* ===== RENDERIZAÇÃO ===== */
+const qa = (k, req) => `data-q="${k}"${req ? ' data-req="1"' : ''}`;
+function likert(i) {
+  reg(i.k, `${i.id} ${cut(i.q)}`);
+  let h = `<fieldset class="q" ${qa(i.k, 1)}><legend>${i.s ? `<span class="sub"><b>${i.id} ${i.s}</b></span>` : ''}${i.id} ${i.q}</legend><div class="opts">` +
+    i.o.map(o => `<label class="opt"><input type="radio" name="${i.k}" data-k="${i.k}" value="${o}"><span class="b"></span><span>${o}</span></label>`).join('') + '</div></fieldset>';
+  if (i.j) {
+    reg(i.k + '_just', `${i.id} ${i.j}`);
+    h += `<div class="q cond" ${qa(i.k + '_just', i.jOn)} ${i.jOn ? `data-showif="${i.k}=${i.jOn}" hidden` : ''}><label class="t" for="f_${i.k}_just">${i.j}</label><textarea id="f_${i.k}_just" data-k="${i.k}_just"></textarea></div>`;
+  }
+  return h;
+}
+function matrix(i) {
+  const th = ESC4.map(c => `<th scope="col">${c}</th>`).join('');
+  const rows = i.r.map((r, n) => {
+    const k = `${i.k}_${'abc'[n]}`; reg(k, `${i.id} – ${cut(r)}`);
+    return `<tr class="q" ${qa(k, 1)}><th scope="row" style="background:none;color:inherit;font-family:inherit;font-weight:400">${r}</th>` +
+      ESC4.map(c => `<td><label class="cel"><input type="radio" name="${k}" data-k="${k}" value="${c}" aria-label="${c}"><span class="c"></span></label></td>`).join('') + '</tr>';
+  }).join('');
+  return `<div class="q" style="padding:0"><p class="sub" style="font-weight:600;color:var(--cinza-escuro)">${i.id} ${i.q}</p><div class="tw"><table><thead><tr><th scope="col">${i.h}</th>${th}</tr></thead><tbody>${rows}</tbody></table></div></div>`;
+}
+function chips(i) {
+  reg(i.k, `${i.id} ${cut(i.q)}`);
+  return `<fieldset class="q" ${qa(i.k, 1)}><legend>${i.id} ${i.q}</legend><div class="chips">` +
+    i.o.map(o => `<label class="chip"><input type="checkbox" data-k="${i.k}" data-multi="1" value="${o}"><span>${o}</span></label>`).join('') + '</div></fieldset>';
+}
+function texto(i) {
+  reg(i.k, (i.id ? i.id + ' ' : '') + cut(i.l || i.q));
+  const lab = i.l ? `<label class="t" for="f_${i.k}">${i.id} ${i.q}</label><label class="t sub" for="f_${i.k}"><b>${i.l}</b></label>` : `<label class="t" for="f_${i.k}">${i.id ? i.id + ' ' : ''}${i.q}</label>`;
+  return `<div class="q" ${qa(i.k)}>${lab}<textarea id="f_${i.k}" data-k="${i.k}"></textarea></div>`;
+}
+const R = { l: likert, m: matrix, c: chips, t: texto };
+const nav = (b, back = true) => `<div class="nav">${back ? '<button type="button" class="btn-secondary" data-go="-1">← Voltar</button>' : '<span></span>'}${b}</div>`;
+const next = '<button type="button" class="btn-primary" data-go="1">Próxima Seção →</button>';
+
+const INTRO = [
+'Prezado(a) participante,',
+'Este instrumento integra a segunda etapa de aplicação/avaliação do Produto Educacional, desenvolvida por uma oficina formativa presencial e dialogada com professores do curso de Pedagogia envolvidos na formação inicial para a docência, com atuação no Estágio Supervisionado, em disciplinas de Didática e Metodologias de Ensino, projetos de extensão, Programa Institucional de Bolsa de Iniciação à Docência (PIBID) e outros espaços formativos.',
+'A atividade faz parte da pesquisa de doutorado de Patricia Cristina Formaggi Cavaleiro Navi, discente do Programa de Pós-Graduação em Ensino (PPGEN) da Universidade Estadual do Norte do Paraná (UENP), Campus Cornélio Procópio, sob orientação da Professora Dr.ª Roberta Negrão de Araújo e coorientação da Professora Dr.ª Sandra Regina dos Reis. A pesquisa, intitulada “A Identidade Docente em Construção: investigando o Estágio Supervisionado em Pedagogia e propondo caminhos formativos”, encontra-se registrada no Comitê de Ética em Pesquisa sob o Parecer Consubstanciado nº 7.659.190.',
+'A oficina tem como finalidade promover a apreciação crítica e dialogada do guia didático, considerando sua pertinência, clareza, organização, potencial formativo e possibilidades de utilização na formação inicial de professores, especialmente no contexto do Estágio Supervisionado. Durante a atividade, a pesquisadora atuará como mediadora das discussões, favorecendo a compreensão das propostas do material e a manifestação de questionamentos, reflexões, comentários e sugestões pelos participantes.',
+'As contribuições registradas no instrumento serão utilizadas para fins acadêmicos, na análise da pesquisa e no aprimoramento do Produto Educacional. As respostas individuais serão tratadas de forma confidencial, com adoção de medidas para proteger a identidade dos participantes e garantir o armazenamento seguro das informações. Considerando o caráter coletivo da oficina, os participantes também serão orientados a respeitar a confidencialidade das manifestações compartilhadas durante as discussões.',
+'A participação é voluntária e está condicionada ao consentimento livre e esclarecido, formalizado antes do início das atividades de pesquisa. O participante poderá recusar sua participação ou retirar seu consentimento, sem prejuízo, observadas as condições e os procedimentos descritos no Termo de Consentimento Livre e Esclarecido (TCLE).',
+'As apreciações, os comentários e as sugestões dos professores contribuirão para a análise das potencialidades e limitações do guia didático, bem como para a identificação de aspectos que possam ser aprimorados, considerando sua finalidade de favorecer a mobilização dos saberes docentes e a reflexão sobre a constituição da identidade docente dos licenciandos em Pedagogia.',
+'O(A) participante poderá solicitar à pesquisadora esclarecimentos sobre a pesquisa e acesso às informações individuais registradas, observadas as condições de confidencialidade e tratamento dos dados previstas no TCLE.',
+'A pesquisadora agradece sua participação e colaboração nesta etapa da pesquisa.'];
+
+const TCLE = [
+'Prezado (a) participante,',
+'Você está sendo convidado (a) a participar, de forma voluntária, de uma pesquisa de doutorado intitulada “<b>A Identidade Docente em Construção: investigando o Estágio Supervisionado em Pedagogia e propondo caminhos formativos</b>”. Esta investigação tem como objetivo desenvolver um produto educacional em formato de guia didático e investigar lacunas do estágio curricular supervisionado na formação da identidade docente no curso de Pedagogia.',
+'Sua privacidade e participação serão respeitadas em todos os sentidos. Seu nome ou qualquer outro dado que possa identificá-lo (a) não será divulgado. As informações registradas individualmente serão tratadas de forma confidencial, sem identificação dos participantes na divulgação dos resultados. Considerando o caráter coletivo da oficina, não será possível assegurar o anonimato entre os participantes durante as discussões. Não haverá remuneração pela participação. Também não estão previstas despesas para o (a) participante. Fica garantido o direito de retirar seu consentimento, em qualquer fase da pesquisa, sem qualquer dano e/ou prejuízo. Espera-se que os resultados desta pesquisa contribuam para o aprimoramento das práticas formativas relacionadas ao estágio supervisionado no curso de Pedagogia.',
+'Sua participação nesta segunda etapa da pesquisa consistirá em participar de uma oficina formativa presencial e dialogada, destinada a professores do curso de Pedagogia envolvidos na formação inicial para a docência, com atuação no Estágio Supervisionado, em disciplinas de Didática e Metodologias de Ensino, projetos de extensão, PIBID e outros espaços formativos. Durante a oficina, o Guia Didático será objeto de apreciação e discussão coletiva, com a mediação da pesquisadora, possibilitando aos participantes apresentar questionamentos, comentários e sugestões. Ao final, os participantes serão convidados a responder individualmente ao instrumento de avaliação do Produto Educacional.',
+'Esta pesquisa apresenta riscos mínimos, relacionados à possibilidade de identificação indireta dos participantes. Para minimizar esse risco, todas as informações registradas pela pesquisadora serão tratadas de forma confidencial. Caso ocorra qualquer incidente envolvendo os dados, os participantes e o CEP/CONEP serão comunicados. Em conformidade com a Resolução CNS nº 510/2016, garantimos a confidencialidade das informações, a proteção da imagem e a suspensão imediata da pesquisa caso seja identificado algum risco não previsto aos participantes da pesquisa. Você receberá uma via deste TCLE, devidamente assinada, para seu arquivo pessoal. Os participantes terão acesso aos resultados da pesquisa, que também poderão ser divulgados em artigos e eventos científicos, sempre sem identificação individual dos participantes.',
+'Caso deseje maiores informações ou esclarecimentos, você poderá entrar em contato no endereço: 1200, R. Padre Melo, Jacarezinho-PR, 86400-000 ou pelo telefone: (44) 99911-8424, ou por meio dos e-mails: <a href="mailto:patricia.formaggi@uenp.edu.br">patricia.formaggi@uenp.edu.br</a> e <a href="mailto:robertanegrao@uenp.edu.br">robertanegrao@uenp.edu.br</a>',
+'Se tiver alguma dúvida ou consideração sobre a ética em pesquisa, você poderá entrar em contato com o Comitê de Ética em Pesquisa da Universidade Estadual do Norte do Paraná (CEP/UENP), e-mail: <a href="mailto:cep@uenp.edu.br">cep@uenp.edu.br</a>, Rod. BR 369, Km 54, Bandeirantes-PR, CEP 86360-000, Caixa Postal 261, Fone (43) 3542-8056, funcionamento de segunda a sexta-feira das 7h30min às 12h e das 13h30min às 17h.'];
+
+const logo = (id, s) => `<img src="https://drive.google.com/thumbnail?id=${id}&sz=w300" alt="Logo ${s}" onerror="this.outerHTML='<span class=&quot;ph&quot;>${s}</span>'">`;
+const P = [];
+P.push(`<div class="logos">${logo(LOGO_1_ID, SIGLA_1)}${logo(LOGO_2_ID, SIGLA_2)}</div>
+<div class="center"><span class="badge">Universidade Estadual do Norte do Paraná – UENP</span>
+<p style="margin-bottom:4px"><b>PROGRAMA DE PÓS-GRADUAÇÃO EM ENSINO – PPGEN</b></p>
+<h1>Instrumento de Aplicação/Avaliação do Produto Educacional em Docentes da Universidade</h1></div><hr class="div">
+${INTRO.map(t => `<p>${t}</p>`).join('')}
+<div class="alert-box"><p><strong>OFICINA FORMATIVA DE APRECIAÇÃO E AVALIAÇÃO DIALOGADA DO PRODUTO EDUCACIONAL</strong></p><p><strong>ORIENTAÇÕES AOS PARTICIPANTES</strong></p>
+<p><b>Este instrumento está sendo disponibilizado antecipadamente para que os participantes possam conhecer os aspectos que serão considerados na avaliação do Guia Didático e orientar sua apreciação durante a oficina formativa.</b></p>
+<p><b>As questões serão discutidas no decorrer da oficina, em um espaço de diálogo e reflexão mediado pela pesquisadora. O registro individual das respostas será realizado posteriormente, por meio de formulário on-line, cujo acesso será disponibilizado aos participantes.</b></p>
+<p><b>A versão impressa tem caráter exclusivamente orientador, não sendo necessário seu preenchimento ou devolução.</b></p></div>
+<div class="nav"><span></span><button type="button" class="btn-primary" data-go="1">Continuar →</button></div>`);
+
+reg('nome_tcle', 'Nome completo (TCLE)'); reg('aceite_tcle', 'Aceite do TCLE');
+P.push(`<span class="badge">TCLE</span><h2>Termo de Consentimento Livre e Esclarecido (TCLE)</h2><hr class="div">
+${TCLE.map(t => `<p>${t}</p>`).join('')}
+<h3>Declaração de Consentimento</h3>
+<div class="q" ${qa('nome_tcle', 1)}><label class="inl" for="f_nome_tcle"><span>Eu,</span><input type="text" id="f_nome_tcle" data-k="nome_tcle" autocomplete="name" placeholder="Nome completo do participante"><span>, aceito participar da pesquisa.</span></label></div>
+${nav('<button type="button" class="btn-accept" data-go="1" data-aceite="1">✓ Aceitar e Continuar</button>')}`);
+
+['id_avaliador|Avaliador(a)', 'id_instituicao|Instituição', 'id_tempo_atuacao|Tempo de atuação na formação de professores (anos)', 'id_atividades|Atividades desenvolvidas na formação inicial de professores', 'id_atividades_outras|Outras atividades relacionadas à formação docente', 'data_preenchimento|Data'].forEach(s => reg(...s.split('|')));
+P.push(`<span class="badge">Identificação</span><h2>Instrumento de Aplicação/Avaliação do Produto Educacional por Docentes da Universidade</h2><hr class="div">
+<div class="alert-box"><p><strong>Produto Educacional:</strong> Guia Didático para a Mobilização dos Saberes Docentes no Estágio Supervisionado do Curso de Pedagogia.</p>
+<p><strong>Objetivo do Produto:</strong> Contribuir para a constituição da identidade docente de licenciandos em Pedagogia, por meio de propostas formativas que favoreçam a mobilização e a reflexão sobre os saberes docentes no contexto do Estágio Supervisionado.</p>
+<p><strong>Objetivo desta aplicação/avaliação:</strong> Analisar, por meio de uma oficina formativa dialogada com professores do curso de Pedagogia envolvidos na formação inicial para a docência, a pertinência, a clareza, a organização, o potencial formativo e as possibilidades de utilização do Guia Didático, considerando suas contribuições para a mobilização dos saberes docentes e para a reflexão sobre a constituição da identidade docente, especialmente no contexto do Estágio Supervisionado.</p></div>
+<div class="q" ${qa('id_avaliador', 1)}><label class="t" for="f_av">Avaliador(a):</label><input type="text" id="f_av" data-k="id_avaliador" autocomplete="name"></div>
+<div class="q" ${qa('id_instituicao', 1)}><label class="t" for="f_ins">Instituição:</label><input type="text" id="f_ins" data-k="id_instituicao"></div>
+<div class="q" ${qa('id_tempo_atuacao', 1)}><label class="t" for="f_tempo">Tempo de atuação na formação de professores (anos):</label><input type="number" min="0" max="80" step="1" inputmode="numeric" id="f_tempo" data-k="id_tempo_atuacao" style="max-width:160px"></div>
+<fieldset class="q" ${qa('id_atividades', 1)}><legend>Atividades desenvolvidas na formação inicial de professores (assinale todas as alternativas pertinentes):</legend><div class="chips">${ATIV.map(o => `<label class="chip"><input type="checkbox" data-k="id_atividades" data-multi="1" value="${o}"><span>${o}</span></label>`).join('')}</div></fieldset>
+<div class="q cond" ${qa('id_atividades_outras', 1)} data-showin="id_atividades=${OUTRAS}" hidden><label class="t" for="f_out">Outras atividades relacionadas à formação docente:</label><input type="text" id="f_out" data-k="id_atividades_outras"></div>
+<div class="q" ${qa('data_preenchimento', 1)}><label class="t" for="f_data">Data:</label><input type="date" id="f_data" data-k="data_preenchimento" style="max-width:220px"></div>
+${nav(next)}`);
+
+SEC.forEach((s, n) => {
+  const last = n === SEC.length - 1;
+  P.push(`<span class="badge">Seção ${s.n} de ${SEC.length}</span><h2>SEÇÃO ${s.n}${s.t ? ' — ' + s.t : ''}</h2><hr class="div">${s.it.map(i => R[i.y](i)).join('')}
+${nav(last ? '<button type="button" class="btn-accept" id="enviar" data-go="send">✓ Enviar Avaliação</button><div class="msg" id="msg-env" role="alert" style="width:100%"></div>' : next)}`);
+});
+
+P.push(`<div class="center"><div class="ok-ic" aria-hidden="true">✓</div><h2>Agradeço a contribuição.</h2><hr class="div" style="margin-left:auto;margin-right:auto;max-width:200px">
+<p>A pesquisadora agradece sua participação e colaboração nesta etapa da pesquisa.</p>
+<div class="alert-box" style="text-align:left"><p><strong>Programa de Pós-Graduação em Ensino (PPGEN) - Mestrado Profissional em Ensino</strong><br>E-mail: <a href="mailto:sec.ppgen@uenp.edu.br">sec.ppgen@uenp.edu.br</a></p>
+<p>Pesquisadora: Patricia Cristina Formaggi Cavaleiro Navi — <a href="mailto:patricia.formaggi@uenp.edu.br">patricia.formaggi@uenp.edu.br</a> — (44) 99911-8424</p></div></div>`);
+
+const app = document.getElementById('app');
+app.innerHTML = P.map((h, i) => `<div class="form-page" data-p="${i}">${h}</div>`).join('') + '<div class="msg" id="msg" role="alert"></div>';
+const pages = [...app.querySelectorAll('.form-page')], N = pages.length;
+const msgBox = document.getElementById('msg');
+document.getElementById('dots').innerHTML = pages.map(() => '<span class="dot"></span>').join('');
+const dots = [...document.querySelectorAll('.dot')];
+let cur = 0;
+
+/* ===== NAVEGAÇÃO ===== */
+function goTo(n) {
+  cur = Math.max(0, Math.min(N - 1, n));
+  pages.forEach((p, i) => { p.classList.toggle('active', i === cur); if (i === cur) p.appendChild(msgBox); });
+  msgBox.className = 'msg';
+  document.getElementById('bar').style.width = ((cur + 1) / N * 100) + '%';
+  document.querySelector('[role=progressbar]').setAttribute('aria-valuenow', Math.round((cur + 1) / N * 100));
+  document.getElementById('etapa').textContent = `Etapa ${cur + 1} de ${N}`;
+  dots.forEach((d, i) => { d.className = 'dot' + (i === cur ? ' on' : i < cur ? ' ok' : ''); });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+const vazio = k => { const v = S[k]; return v == null || (Array.isArray(v) ? !v.length : !String(v).trim()); };
+function validar(p) {
+  const falta = [...p.querySelectorAll('[data-req]')].filter(w => !w.closest('[hidden]') && vazio(w.dataset.q));
+  p.querySelectorAll('.erro').forEach(w => w.classList.remove('erro'));
+  falta.forEach(w => w.classList.add('erro'));
+  if (falta.length) {
+    msgBox.textContent = `Preencha ${falta.length === 1 ? 'o campo destacado' : 'os ' + falta.length + ' campos destacados'} para continuar.`;
+    msgBox.className = 'msg show';
+    falta[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+    const f = falta[0].querySelector('input,textarea'); if (f) f.focus({ preventScroll: true });
+    return false;
+  }
+  msgBox.className = 'msg'; return true;
+}
+
+/* ===== EVENTOS (um único handler por tipo; sem onclick em label) ===== */
+function aplicarCondicoes() {
+  app.querySelectorAll('[data-showif],[data-showin]').forEach(w => {
+    let show;
+    if (w.dataset.showif) { const [k, v] = w.dataset.showif.split('='); show = S[k] === v; }
+    else { const [k, v] = w.dataset.showin.split('='); show = (S[k] || []).includes(v); }
+    w.hidden = !show;
+    if (!show) { const inp = w.querySelector('[data-k]'); if (inp) { inp.value = ''; delete S[w.dataset.q]; } }
+  });
+}
+function ler(el) {
+  const k = el.dataset.k;
+  if (el.dataset.multi) S[k] = [...app.querySelectorAll(`[data-k="${k}"]:checked`)].map(i => i.value);
+  else S[k] = el.value;
+  const w = el.closest('[data-q]'); if (w) w.classList.remove('erro');
+  aplicarCondicoes();
+}
+app.addEventListener('change', e => { if (e.target.dataset && e.target.dataset.k) ler(e.target); });
+app.addEventListener('input', e => { if (e.target.dataset && e.target.dataset.k && !/radio|checkbox/.test(e.target.type)) ler(e.target); });
+app.addEventListener('click', e => {
+  const b = e.target.closest('[data-go]'); if (!b) return;
+  const d = b.dataset.go;
+  if (d === '-1') return goTo(cur - 1);
+  if (!validar(pages[cur])) return;
+  if (b.dataset.aceite) { S.aceite_tcle = 'Sim'; const a = document.getElementById('f_av'); if (a && !a.value) { a.value = S.nome_tcle; S.id_avaliador = S.nome_tcle; } }
+  if (d === 'send') return enviar();
+  goTo(cur + 1);
+});
+
+/* ===== ENVIO ===== */
+const hoje = () => new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+S.data_preenchimento = hoje(); document.getElementById('f_data').value = S.data_preenchimento;
+
+async function enviar() {
+  const btn = document.getElementById('enviar'), box = document.getElementById('msg-env');
+  box.className = 'msg'; btn.disabled = true; btn.textContent = 'Enviando...';
+  const dados = { timestamp: new Date().toISOString() };
+  ORDEM.forEach(k => { const v = S[k]; dados[k] = Array.isArray(v) ? v.join('; ') : (v == null ? '' : v); });
+  dados._ordem = ORDEM; dados._rotulos = ROT;
+  try {
+    if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.startsWith('COLE_AQUI')) throw new Error('URL do Google Apps Script não configurada.');
+    /* text/plain evita o preflight CORS. O Apps Script responde via redirecionamento (script.googleusercontent.com)
+       com cabeçalhos CORS liberados, então a resposta JSON pode ser lida. Se um bloqueador de rede impedir a leitura,
+       o fetch lança erro e o usuário pode tentar de novo (o script não duplica linhas só por leitura falha). */
+    const res = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(dados) });
+    const j = await res.json();
+    if (j.status !== 'ok') throw new Error(j.mensagem || 'Erro no servidor.');
+    goTo(N - 1);
+  } catch (err) {
+    box.innerHTML = `Não foi possível enviar suas respostas (${String(err.message || err).replace(/</g, '&lt;')}). Verifique sua conexão e tente novamente.<br><button type="button" id="retry">Tentar novamente</button>`;
+    box.className = 'msg show';
+    document.getElementById('retry').onclick = enviar;
+    btn.disabled = false; btn.textContent = '✓ Enviar Avaliação';
+  }
+}
+goTo(0);
+</script>
+</body>
+</html>

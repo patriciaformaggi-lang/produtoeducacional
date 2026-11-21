@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Instrumento de Validação — Produto Educacional</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --verde: #1a5c2e;
+    --verde-medio: #2d7a42;
+    --verde-claro: #4a9e5c;
+    --verde-suave: #e8f4eb;
+    --verde-borda: #b8ddc0;
+    --dourado: #c9a84c;
+    --dourado-claro: #e8d08a;
+    --cinza-escuro: #2a2a2a;
+    --cinza-medio: #555;
+    --cinza-claro: #f5f5f0;
+    --branco: #fdfcf8;
+    --sombra: 0 4px 24px rgba(26,92,46,0.10);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Source Serif 4', Georgia, serif;
+    background: linear-gradient(135deg, #f0f7f2 0%, #fdfcf8 50%, #f5f0e8 100%);
+    color: var(--cinza-escuro);
+    min-height: 100vh;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  /* PROGRESS BAR */
+  .progress-container {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: var(--branco);
+    box-shadow: 0 2px 12px rgba(26,92,46,0.12);
+    padding: 10px 24px;
+  }
+  .progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+    font-family: 'Playfair Display', serif;
+  }
+  .progress-title {
+    font-size: 13px;
+    color: var(--verde);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+  .progress-step {
+    font-size: 12px;
+    color: var(--cinza-medio);
+  }
+  .progress-bar-outer {
+    height: 6px;
+    background: var(--verde-borda);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .progress-bar-inner {
+    height: 100%;
+    background: linear-gradient(90deg, var(--verde), var(--dourado));
+    border-radius: 3px;
+    transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  /* STEPS */
+  .step-indicators {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    margin-top: 7px;
+    flex-wrap: wrap;
+  }
+  .step-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--verde-borda);
+    transition: background 0.3s, transform 0.3s;
+  }
+  .step-dot.active { background: var(--verde); transform: scale(1.4); }
+  .step-dot.done { background: var(--dourado); }
+
+  /* CARD / PAGE */
+  .form-page {
+    display: none;
+    animation: fadeSlide 0.4s ease;
+  }
+  .form-page.active { display: block; }
+
+  @keyframes fadeSlide {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .container {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 100px 20px 40px;
+  }
+
+  .card {
+    background: var(--branco);
+    border-radius: 18px;
+    box-shadow: var(--sombra);
+    padding: 44px 48px;
+    border: 1px solid var(--verde-borda);
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, var(--verde), var(--dourado));
+  }
+
+  /* LOGO AREA */
+  .logos {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    align-items: center;
+    margin-bottom: 36px;
+    flex-wrap: wrap;
+  }
+  .logo-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .logo-img {
+    max-height: 72px;
+    max-width: 160px;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.10));
+  }
+  .logo-placeholder {
+    width: 130px;
+    height: 60px;
+    background: var(--verde-suave);
+    border: 2px solid var(--verde-borda);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: var(--verde-medio);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* TYPOGRAPHY */
+  .section-badge {
+    display: inline-block;
+    background: var(--verde-suave);
+    color: var(--verde);
+    border: 1px solid var(--verde-borda);
+    border-radius: 20px;
+    padding: 4px 16px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--verde);
+    line-height: 1.3;
+    margin-bottom: 10px;
+  }
+  h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--verde);
+    margin-bottom: 16px;
+  }
+  h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    color: var(--verde-medio);
+    margin: 22px 0 10px;
+  }
+  .divider {
+    height: 2px;
+    background: linear-gradient(90deg, var(--verde-borda), transparent);
+    margin: 22px 0;
+    border-radius: 1px;
+  }
+  p {
+    color: var(--cinza-medio);
+    margin-bottom: 12px;
+    text-align: justify;
+  }
+
+  /* FORM ELEMENTS */
+  label { display: block; font-weight: 600; color: var(--cinza-escuro); margin-bottom: 6px; font-size: 14px; }
+
+  input[type="text"], input[type="email"], input[type="date"], textarea, select {
+    width: 100%;
+    border: 1.5px solid var(--verde-borda);
+    border-radius: 10px;
+    padding: 11px 15px;
+    font-family: 'Source Serif 4', serif;
+    font-size: 14px;
+    color: var(--cinza-escuro);
+    background: var(--branco);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+    margin-bottom: 18px;
+  }
+  input:focus, textarea:focus, select:focus {
+    border-color: var(--verde-medio);
+    box-shadow: 0 0 0 3px rgba(45,122,66,0.10);
+  }
+  textarea { min-height: 90px; resize: vertical; }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 580px) { .form-row { grid-template-columns: 1fr; } .card { padding: 28px 18px; } }
+
+  /* RADIO LIKERT */
+  .likert-group { margin: 16px 0 20px; }
+  .likert-group label.group-label { font-size: 15px; margin-bottom: 12px; color: var(--cinza-escuro); }
+  .likert-options { display: flex; flex-direction: column; gap: 8px; }
+  .likert-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--verde-suave);
+    border: 1.5px solid transparent;
+    border-radius: 10px;
+    padding: 10px 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 14px;
+  }
+  .likert-option:hover { border-color: var(--verde-medio); background: #d6eddb; }
+  .likert-option input[type="radio"] { display: none; }
+  .likert-option.selected { border-color: var(--verde); background: #c6e6ce; font-weight: 600; }
+  .likert-dot {
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    border: 2px solid var(--verde-medio);
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+  .likert-option.selected .likert-dot { background: var(--verde); border-color: var(--verde); }
+  .likert-option.selected .likert-dot::after { content: ''; width: 6px; height: 6px; border-radius: 50%; background: white; }
+
+  /* CHECKBOX TABLE */
+  .table-wrapper { overflow-x: auto; margin: 12px 0 20px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  thead tr { background: var(--verde); color: white; }
+  thead th { padding: 10px 14px; text-align: center; font-family: 'Playfair Display', serif; font-weight: 600; font-size: 13px; }
+  thead th:first-child { text-align: left; }
+  tbody tr { border-bottom: 1px solid var(--verde-borda); transition: background 0.15s; }
+  tbody tr:hover { background: var(--verde-suave); }
+  tbody td { padding: 10px 14px; }
+  tbody td:not(:first-child) { text-align: center; }
+  .check-cell { cursor: pointer; }
+  .check-cell input[type="radio"] { display: none; }
+  .check-visual {
+    width: 22px; height: 22px;
+    border: 2px solid var(--verde-borda);
+    border-radius: 50%;
+    margin: 0 auto;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+  .check-visual.checked { background: var(--verde); border-color: var(--verde); }
+  .check-visual.checked::after { content: '✓'; color: white; font-size: 12px; font-weight: 700; }
+
+  /* BUTTONS */
+  .btn-row { display: flex; justify-content: space-between; align-items: center; margin-top: 32px; gap: 12px; flex-wrap: wrap; }
+  .btn {
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    font-weight: 600;
+    padding: 13px 32px;
+    border-radius: 40px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.25s;
+    letter-spacing: 0.04em;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--verde), var(--verde-claro));
+    color: white;
+    box-shadow: 0 4px 16px rgba(26,92,46,0.25);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 22px rgba(26,92,46,0.35); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--verde);
+    border: 2px solid var(--verde-borda);
+  }
+  .btn-secondary:hover { background: var(--verde-suave); }
+  .btn-accept {
+    background: linear-gradient(135deg, var(--dourado), #a8832a);
+    color: white;
+    box-shadow: 0 4px 16px rgba(201,168,76,0.35);
+  }
+  .btn-accept:hover { transform: translateY(-2px); box-shadow: 0 6px 22px rgba(201,168,76,0.45); }
+
+  /* FINAL PAGE */
+  .final-box {
+    text-align: center;
+    padding: 20px 0;
+  }
+  .final-icon {
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--verde), var(--verde-claro));
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 24px;
+    font-size: 36px;
+    box-shadow: 0 8px 30px rgba(26,92,46,0.30);
+  }
+
+  /* ALERT */
+  .alert-box {
+    background: var(--verde-suave);
+    border-left: 4px solid var(--verde);
+    border-radius: 0 10px 10px 0;
+    padding: 14px 18px;
+    margin: 16px 0;
+    font-size: 14px;
+    color: var(--verde);
+  }
+
+  .required-note { font-size: 12px; color: #999; margin-bottom: 20px; font-style: italic; }
+
+  .area-check-group { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 18px; }
+  .area-chip {
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1.5px solid var(--verde-borda);
+    background: var(--branco);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+  }
+  .area-chip:hover { border-color: var(--verde-medio); background: var(--verde-suave); }
+  .area-chip.selected { background: var(--verde); color: white; border-color: var(--verde); }
+  .area-chip input { display: none; }
+
+  .outro-field { display: none; margin-top: 8px; }
+  .outro-field.show { display: block; }
+</style>
+</head>
+<body>
+
+<!-- PROGRESS BAR -->
+<div class="progress-container">
+  <div class="progress-header">
+    <span class="progress-title">Instrumento de Validação — Produto Educacional</span>
+    <span class="progress-step" id="stepLabel">Etapa 1 de 12</span>
+  </div>
+  <div class="progress-bar-outer">
+    <div class="progress-bar-inner" id="progressBar" style="width:8.3%"></div>
+  </div>
+  <div class="step-indicators" id="stepDots"></div>
+</div>
+
+<div class="container">
+
+  <!-- PAGE 1: APRESENTAÇÃO -->
+  <div class="form-page active" id="page-1">
+    <div class="card">
+      <div class="logos">
+        <div class="logo-box">
+          <img src="https://drive.google.com/thumbnail?id=1Z90MJJtX1AzoBfa5jHkY8uuSSOecZYDN&sz=w300" alt="Logo UENP" class="logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="logo-placeholder" style="display:none">UENP</div>
+        </div>
+        <div class="logo-box">
+          <img src="https://drive.google.com/thumbnail?id=1TJ2j48uc8Zr_w5dx_iwpNAUsXvSdrEWZ&sz=w300" alt="Logo PPGEn" class="logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="logo-placeholder" style="display:none">PPGEn</div>
+        </div>
+      </div>
+      <div class="section-badge">Apresentação</div>
+      <h1>Instrumento de Validação Preliminar de Produto Educacional por Pares Especialistas</h1>
+      <div class="divider"></div>
+      <p>Prezado(a) participante,</p>
+      <p>Este instrumento refere-se à etapa de validação preliminar do Produto Educacional junto a professores de estágio supervisionado do curso de Pedagogia. É parte integrante da pesquisa de doutorado de <strong>Patricia Cristina Formaggi Cavaleiro Navi</strong>, discente do Programa de Pós-Graduação em Ensino (PPGEn) da Universidade Estadual do Norte do Paraná (UENP), Campus Cornélio Procópio, sob a orientação da <strong>Professora Dra. Roberta Negrão de Araújo</strong> e coorientação da <strong>Professora Dra. Sandra Regina dos Reis</strong>.</p>
+      <p>O tema da pesquisa é <em>"A Identidade Docente em Construção: investigando o Estágio Supervisionado em Pedagogia e propondo caminhos formativos"</em>, encontra-se registrado no Comitê de Ética em Pesquisa sob o <strong>Parecer Consubstanciado nº 7.659.190</strong>.</p>
+      <p>Os dados aqui obtidos serão utilizados exclusivamente para fins acadêmicos e serão tratados sob sigilo e confidencialidade, com armazenamento seguro das informações.</p>
+      <p>Antes do preenchimento, é necessário que o(a) participante assine o Termo de Consentimento Livre e Esclarecido (TCLE) para confirmação de sua participação. A qualquer momento, a autorização de uso dos dados pode ser retirada, e o(a) participante poderá ainda solicitar a alteração de quaisquer informações que julgue pertinentes, desde que entre em contato com a pesquisadora.</p>
+      <p>Como se trata de coleta de dados para fins de pesquisa acadêmica em nível de doutorado, as contribuições fornecidas auxiliarão na análise do estudo e no aprimoramento do guia de estágio supervisionado voltado à formação da identidade docente no curso de Pedagogia. As fichas de avaliação e apreciação do produto educacional colaborarão para a análise da pesquisa e para o aperfeiçoamento de propostas formativas destinadas aos licenciandos.</p>
+      <p>Uma cópia das informações pode ser solicitada junto à pesquisadora para arquivo pessoal e acompanhamento das informações registradas.</p>
+      <div class="alert-box">A pesquisadora agradece sua colaboração.</div>
+      <div class="btn-row" style="justify-content:flex-end">
+        <button class="btn btn-primary" onclick="goTo(2)">Continuar →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 2: TCLE -->
+  <div class="form-page" id="page-2">
+    <div class="card">
+      <div class="section-badge">TCLE</div>
+      <h1>Termo de Consentimento Livre e Esclarecido</h1>
+      <div class="divider"></div>
+      <p>Prezado(a) participante,</p>
+      <p>Você está sendo convidado(a) a participar, de forma voluntária, de uma pesquisa de doutorado intitulada <em>"A Identidade Docente em Construção: investigando o Estágio Supervisionado em Pedagogia e propondo caminhos formativos"</em>. Esta investigação tem como objetivo desenvolver um produto educacional em formato de guia didático e investigar lacunas do estágio curricular supervisionado na formação da identidade docente no curso de Pedagogia.</p>
+      <p>Sua privacidade e participação serão respeitadas em todos os sentidos. Seu nome ou qualquer outro dado que possa identificá-lo(a) não será divulgado. As informações serão apresentadas de forma anônima e confidencial. Não haverá remuneração pela participação. Também não estão previstas despesas para o(a) participante.</p>
+      <p>Fica garantido o direito de retirar seu consentimento, em qualquer fase da pesquisa, sem qualquer dano e/ou prejuízo. Espera-se que os resultados desta pesquisa contribuam para o aprimoramento das práticas formativas relacionadas ao estágio supervisionado no curso de Pedagogia.</p>
+      <p>Sua participação consistirá em responder ao instrumento de avaliação do produto educacional e contribuir com sua apreciação sobre o material proposto. Esta pesquisa apresenta riscos mínimos, relacionados à possibilidade de identificação indireta dos participantes. Para minimizar esse risco, todas as informações serão tratadas de forma confidencial. Caso ocorra qualquer incidente envolvendo os dados, os participantes e o CEP/CONEP serão comunicados.</p>
+      <p>Em conformidade com a Resolução CNS nº 510/2016, garantimos a confidencialidade das informações, a proteção da imagem e a suspensão imediata da pesquisa caso seja identificado algum risco não previsto aos participantes da pesquisa. Você ainda receberá uma via deste TCLE por meio do e-mail informado.</p>
+      <p>Os participantes terão acesso aos resultados da pesquisa, que também poderão ser divulgados em artigos e eventos científicos, sempre com garantia de anonimato.</p>
+      <p><strong>Contato da pesquisadora:</strong> R. Padre Melo, 1200, Jacarezinho-PR, 86400-000 | Tel: (44) 99911-8424 | E-mails: <a href="mailto:patricia.formaggi@uenp.edu.br" style="color:var(--verde)">patricia.formaggi@uenp.edu.br</a> e <a href="mailto:robertanegrao@uenp.edu.br" style="color:var(--verde)">robertanegrao@uenp.edu.br</a></p>
+      <p><strong>CEP/UENP:</strong> <a href="mailto:cep@uenp.edu.br" style="color:var(--verde)">cep@uenp.edu.br</a> | Rod. BR 369, Km 54, Bandeirantes-PR, CEP 86360-000 | Fone: (43) 3542-8056</p>
+      <div class="divider"></div>
+      <label for="tcle-nome">Seu nome completo <span style="color:#c0392b">*</span></label>
+      <input type="text" id="tcle-nome" placeholder="Digite seu nome completo">
+      <div class="alert-box">
+        Ao clicar em "Aceitar e Continuar", você confirma que leu e concorda com os termos acima, autorizando o uso de seus dados para fins desta pesquisa acadêmica.
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goTo(1)">← Voltar</button>
+        <button class="btn btn-accept" onclick="aceitarTCLE()">✓ Aceitar e Continuar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 3: IDENTIFICAÇÃO -->
+  <div class="form-page" id="page-3">
+    <div class="card">
+      <div class="section-badge">Identificação</div>
+      <h1>Instrumento de Validação Preliminar</h1>
+      <h2>Produto Educacional: Guia Didático para a Formação dos Saberes Docentes no Estágio Supervisionado do Curso de Pedagogia</h2>
+      <div class="divider"></div>
+      <p><strong>Objetivo do Produto:</strong> Contribuir para o desenvolvimento da identidade profissional docente de licenciandos em Pedagogia, por meio da mobilização e reflexão sobre os saberes da docência no contexto do Estágio Supervisionado.</p>
+      <p><strong>Objetivo desta avaliação:</strong> Analisar o Produto Educacional em sua versão preliminar, considerando sua clareza, pertinência, potencial formativo, organização e aplicabilidade, bem como coletar sugestões para seu aprimoramento.</p>
+      <div class="divider"></div>
+      <p class="required-note">* Campos obrigatórios</p>
+      <label for="avaliador">Avaliador(a) <span style="color:#c0392b">*</span></label>
+      <input type="text" id="avaliador" placeholder="Nome completo">
+      <label for="instituicao">Instituição <span style="color:#c0392b">*</span></label>
+      <input type="text" id="instituicao" placeholder="Nome da instituição">
+      <label for="tempo-atuacao">Tempo de atuação na formação de professores <span style="color:#c0392b">*</span></label>
+      <input type="text" id="tempo-atuacao" placeholder="Ex.: 10 anos">
+      <label>Área de atuação principal <span style="color:#c0392b">*</span></label>
+      <div class="area-check-group" id="areaGroup">
+        <label class="area-chip" onclick="toggleArea(this,'Educação Infantil')">
+          <input type="checkbox" value="Educação Infantil"> Educação Infantil
+        </label>
+        <label class="area-chip" onclick="toggleArea(this,'Anos Iniciais')">
+          <input type="checkbox" value="Anos Iniciais"> Anos Iniciais
+        </label>
+        <label class="area-chip" onclick="toggleArea(this,'Ensino Superior')">
+          <input type="checkbox" value="Ensino Superior"> Ensino Superior
+        </label>
+        <label class="area-chip" onclick="toggleArea(this,'Formação de Professores')">
+          <input type="checkbox" value="Formação de Professores"> Formação de Professores
+        </label>
+        <label class="area-chip" onclick="toggleArea(this,'Outro')">
+          <input type="checkbox" value="Outro"> Outro
+        </label>
+      </div>
+      <div class="outro-field" id="outraArea">
+        <label>Especifique:</label>
+        <input type="text" id="outraAreaTexto" placeholder="Sua área de atuação">
+      </div>
+      <label for="data-avaliacao">Data <span style="color:#c0392b">*</span></label>
+      <input type="date" id="data-avaliacao">
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goTo(2)">← Voltar</button>
+        <button class="btn btn-primary" onclick="validarIdentificacao()">Iniciar Avaliação →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 4: SEÇÃO 1 -->
+  <div class="form-page" id="page-4">
+    <div class="card">
+      <div class="section-badge">Seção 1 de 8</div>
+      <h1>Contribuição para a Formação e Identidade Docente</h1>
+      <div class="divider"></div>
+      <div class="likert-group">
+        <label class="group-label">O Produto Educacional contribui para o desenvolvimento da identidade profissional docente dos licenciandos?</label>
+        <div class="likert-options">
+          <label class="likert-option" onclick="selectLikert(this,'s1q1','4')"><input type="radio" name="s1q1" value="4"><div class="likert-dot"></div>(4) Contribui significativamente</label>
+          <label class="likert-option" onclick="selectLikert(this,'s1q1','3')"><input type="radio" name="s1q1" value="3"><div class="likert-dot"></div>(3) Contribui</label>
+          <label class="likert-option" onclick="selectLikert(this,'s1q1','2')"><input type="radio" name="s1q1" value="2"><div class="likert-dot"></div>(2) Contribui parcialmente</label>
+          <label class="likert-option" onclick="selectLikert(this,'s1q1','1')"><input type="radio" name="s1q1" value="1"><div class="likert-dot"></div>(1) Não contribui</label>
+        </div>
+      </div>
+      <label>Justifique:</label>
+      <textarea id="s1q1just" placeholder="Sua justificativa..."></textarea>
+      <h3>O Produto favorece a reflexão sobre:</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Aspectos</th><th>Sim (3)</th><th>Parcialmente (2)</th><th>Não (1)</th></tr></thead>
+          <tbody>
+            <tr><td>Saberes da docência</td>
+              <td class="check-cell" onclick="selectCheck('s1t1','3',this)"><div class="check-visual" id="s1t1_3"></div></td>
+              <td class="check-cell" onclick="selectCheck('s1t1','2',this)"><div class="check-visual" id="s1t1_2"></div></td>
+              <td class="check-cell" onclick="selectCheck('s1t1','1',this)"><div class="check-visual" id="s1t1_1"></div></td>
+            </tr>
+            <tr><td>Papel do professor</td>
+              <td class="check-cell" onclick="selectCheck('s1t2','3',this)"><div class="check-visual" id="s1t2_3"></div></td>
+              <td class="check-cell" onclick="selectCheck('s1t2','2',this)"><div class="check-visual" id="s1t2_2"></div></td>
+              <td class="check-cell" onclick="selectCheck('s1t2','1',this)"><div class="check-visual" id="s1t2_1"></div></td>
+            </tr>
+            <tr><td>Experiências do estágio</td>
+              <td class="check-cell" onclick="selectCheck('s1t3','3',this)"><div class="check-visual" id="s1t3_3"></div></td>
+              <td class="check-cell" onclick="selectCheck('s1t3','2',this)"><div class="check-visual" id="s1t3_2"></div></td>
+              <td class="check-cell" onclick="selectCheck('s1t3','1',this)"><div class="check-visual" id="s1t3_1"></div></td>
+            </tr>
+            <tr><td>Construção da identidade docente</td>
+              <td class="check-cell" onclick="selectCheck('s1t4','3',this)"><div class="check-visual" id="s1t4_3"></div></td>
+              <td class="check-cell" onclick="selectCheck('s1t4','2',this)"><div class="check-visual" id="s1t4_2"></div></td>
+              <td class="check-cell" onclick="selectCheck('s1t4','1',this)"><div class="check-visual" id="s1t4_1"></div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <label>Comentários e sugestões:</label>
+      <textarea id="s1coment" placeholder="Comentários e sugestões..."></textarea>
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goTo(3)">← Voltar</button>
+        <button class="btn btn-primary" onclick="goTo(5)">Próxima Seção →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 5: SEÇÃO 2 -->
+  <div class="form-page" id="page-5">
+    <div class="card">
+      <div class="section-badge">Seção 2 de 8</div>
+      <h1>Análise do Conteúdo</h1>
+      <div class="divider"></div>
+      <div class="likert-group">
+        <label class="group-label">O conteúdo do Produto Educacional apresenta-se:</label>
+        <div class="likert-options">
+          <label class="likert-option" onclick="selectLikert(this,'s2q1','4')"><input type="radio" name="s2q1" value="4"><div class="likert-dot"></div>(4) Muito claro</label>
+          <label class="likert-option" onclick="selectLikert(this,'s2q1','3')"><input type="radio" name="s2q1" value="3"><div class="likert-dot"></div>(3) Claro</label>
+          <label class="likert-option" onclick="selectLikert(this,'s2q1','2')"><input type="radio" name="s2q1" value="2"><div class="likert-dot"></div>(2) Parcialmente claro</label>
+          <label class="likert-option" onclick="selectLikert(this,'s2q1','1')"><input type="radio" name="s2q1" value="1"><div class="likert-dot"></div>(1) Pouco claro</label>
+        </div>
+      </div>
+      <label>Sugestões de melhoria:</label>
+      <textarea id="s2q1sug" placeholder="Suas sugestões..."></textarea>
+      <div class="divider"></div>
+      <div class="likert-group">
+        <label class="group-label">O conteúdo é:</label>
+        <div class="likert-options">
+          <label class="likert-option" onclick="selectLikert(this,'s2q2','4')"><input type="radio" name="s2q2" value="4"><div class="likert-dot"></div>(4) Muito pertinente</label>
+          <label class="likert-option" onclick="selectLikert(this,'s2q2','3')"><input type="radio" name="s2q2" value="3"><div class="likert-dot"></div>(3) Pertinente</label>
+          <label class="likert-option" onclick="selectLikert(this,'s2q2','2')"><input type="radio" name="s2q2" value="2"><div class="likert-dot"></div>(2) Parcialmente pertinente</label>
+          <label class="likert-option" onclick="selectLikert(this,'s2q2','1')"><input type="radio" name="s2q2" value="1"><div class="likert-dot"></div>(1) Pouco pertinente</label>
+        </div>
+      </div>
+      <label>Sugestões:</label>
+      <textarea id="s2q2sug" placeholder="Suas sugestões..."></textarea>
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goTo(4)">← Voltar</button>
+        <button class="btn btn-primary" onclick="goTo(6)">Próxima Seção →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 6: SEÇÃO 3 -->
+  <div class="form-page" id="page-6">
+    <div class="card">
+      <div class="section-badge">Seção 3 de 8</div>
+      <h1>Análise das Propostas Formativas</h1>
+      <div class="divider"></div>
+      <h3>3.1 Articulação teoria–prática</h3>
+      <div class="likert-group">
+        <label class="group-label">O Produto Educacional contribui para promover a articulação teoria e prática no contexto do Estágio Supervisionado?</label>
+        <div class="likert-options">
+          <label class="likert-option" onclick="selectLikert(this,'s3q1','3')"><input type="radio" name="s3q1" value="3"><div class="likert-dot"></div>(3) Sim</label>
+          <label class="likert-option" onclick="selectLikert(this,'s3q1','2')"><input type="radio" name="s3q1" value="2"><div class="likert-dot"></div>(2) Parcialmente</label>
+          <label class="likert-option" onclick="selectLikert(this,'s3q1','1')"><input type="radio" name="s3q1" value="1"><div class="likert-dot"></div>(1) Não</label>
+        </div>
+      </div>
+      <label>Justifique:</label>
+      <textarea id="s3q1just" placeholder="Sua justificativa..."></textarea>
+      <div class="divider"></div>
+      <h3>3.2 As atividades propostas:</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Critérios</th><th>Sim (3)</th><th>Parcialmente (2)</th><th>Não (1)</th></tr></thead>
+          <tbody>
+            <tr><td>Favorecem reflexão</td>
+              <td class="check-cell" onclick="selectCheck('s3t1','3',this)"><div class="check-visual" id="s3t1_3"></div></td>
+              <td class="check-cell" onclick="selectCheck('s3t1','2',this)"><div class="check-visual" id="s3t1_2"></div></td>
+              <td class="check-cell" onclick="selectCheck('s3t1','1',this)"><div class="check-visual" id="s3t1_1"></div></td>
+            </tr>
+            <tr><td>São coerentes com o objetivo</td>
+              <td class="check-cell" onclick="selectCheck('s3t2','3',this)"><div class="check-visual" id="s3t2_3"></div></td>
+              <td class="check-cell" onclick="selectCheck('s3t2','2',this)"><div class="check-visual" id="s3t2_2"></div></td>
+              <td class="check-cell" onclick="selectCheck('s3t2','1',this)"><div class="check-visual" id="s3t2_1"></div></td>
+            </tr>
+            <tr><td>São aplicáveis</td>
+              <td class="check-cell" onclick="selectCheck('s3t3','3',this)"><div class="check-visual" id="s3t3_3"></div></td>
+              <td class="check-cell" onclick="selectCheck('s3t3','2',this)"><div class="check-visual" id="s3t3_2"></div></td>
+              <td class="check-cell" onclick="selectCheck('s3t3','1',this)"><div class="check-visual" id="s3t3_1"></div></td>
+            </tr>
+            <tr><td>São relevantes</td>
+              <td class="check-cell" onclick="selectCheck('s3t4','3',this)"><div class="check-visual" id="s3t4_3"></div></td>
+              <td class="check-cell" onclick="selectCheck('s3t4','2',this)"><div class="check-visual" id="s3t4_2"></div></td>
+              <td class="check-cell" onclick="selectCheck('s3t4','1',this)"><div class="check-visual" id="s3t4_1"></div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <label>Sugestões:</label>
+      <textarea id="s3sug" placeholder="Suas sugestões..."></textarea>
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goTo(5)">← Voltar</button>
+        <button class="btn btn-primary" onclick="goTo(7)">Próxima Seção →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 7: SEÇÃO 4 -->
+  <div class="form-page" id="page-7">
+    <div class="card">
+      <div class="section-badge">Seção 4 de 8</div>
+      <h1>Organização do Produto</h1>
+      <div class="divider"></div>
+      <h3>O Produto apresenta:</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr><th>Critérios</th><th>Sim (3)</th><th>Parcialmente (2)</th><th>Não (1)</th></tr></thead>
+          <tbody>
+            <tr><td>Organização lógica</td>
+              <td class="check-cell" onclick="selectCheck('s4t1','3',this)"><div class="check-visual" id="s4t1_3"></div></td>
+              <td class="check-cell" onclick="selectCheck('s4t1','2',this)"><div class="check-visual" id="s4t1_2"></div></td>
+              <td class="check-cell" onclick="selectCheck('s4t1','1',this)"><div class="check-visual" id="s4t1_1"></div></td>
+            </tr>
+            <tr><td>Sequência coerente</td>
+              <td class="check-cell" onclick="selectCheck('s4t2','3',this)"><div class="check-visual" id="s4t2_3"></div></td>
+              <td class="check-cell" onclick="selectCheck('s4t2','2',this)"><div class="check-visual" id="s4t2_2"></div></td>
+              <td class="check-cell" onclick="selectCheck('s4t2','1',this)"><div class="check-visual" id="s4t2_1"></div></td>
+            </tr>
+            <tr><td>Estrutura adequada</td>
+              <td class="check-cell" onclick="selectCheck('s4t3','3',this)"><div class="check-visual" id="s4t3_3"></div></td>
+              <td class="check-cell" onclick="selectCheck('s4t3','2',this)"><div class="check-visual" id="s4t3_2"></div></td>
+              <td class="check-cell" onclick="selectCheck('s4t3','1',this)"><div class="check-visual" id="s4t3_1"></div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <label>Sugestões:</label>
+      <textarea id="s4sug" placeholder="Suas sugestões..."></textarea>
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goTo(6)">← Voltar</button>
+        <button class="btn btn-primary" onclick="goTo(8)">Próxima Seção →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 8: SEÇÃO 5 -->
+  <div class="form-page" id="page-8">
+    <div class="card">
+      <div class="section-badge">Seção 5 de 8</div>
+      <h1>Apresentação Visual <span style="font-size:0.8em;color:var(--cinza-medio)">(Versão Preliminar)</span></h1>
+      <div class="divider"></div>
+      <div class="alert-box">Considerando que o material ainda passará por ajustes no layout, design e organização visual:</div>
+      <div class="likert-group">
+        <label class="group-label">A apresentação atual está:</label>
+        <div class="likert-options">
+          <label class="likert-option" onclick="selectLikert(this,'s5q1','3')"><input type="radio" name="s5q1" value="3"><div class="likert-dot"></div>(3) Adequada</label>
+          <label class="likert-option" onclick="selectLikert(this,'s5q1','2')"><input type="radio" name="s5q1" value="2"><div class="likert-dot"></div>(2) Parcialmente adequada</label>
+          <label class="likert-option" onclick="selectLikert(this,'s5q1','1')"><input type="radio" name="s5q1" value="1"><div class="likert-dot"></div>(1) Precisa melhorar</label>
+        </div>
+      </div>
+      <label>Sugestões para layout, design e organização visual:</label>
+      <textarea id="s5sug" placeholder="Suas sugestões de layout e design..."></textarea>
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goTo(7)">← Voltar</button>
+        <button class="btn btn-primary" onclick="goTo(9)">Próxima Seção →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 9: SEÇÃO 6 -->
+  <div class="form-page" id="page-9">
+    <div class="card">
+      <div class="section-badge">Seção 6 de 8</div>
+      <h1>Viabilidade de Uso</h1>
+      <div class="divider"></div>
+      <div class="likert-group">
+        <label class="group-label">Você utilizaria esse Produto na formação de estagiários?</label>
+        <div class="likert-options">
+          <label class="likert-option" onclick="selectLikert(this,'s6q1','3')"><input type="radio" name="s6q1" value="3"><div class="likert-dot"></div>(3) Sim</label>
+          <label class="likert-option" onclick="selectLikert(this,'s6q1','2')"><input type="radio" name="s6q1" value="2"><div class="likert-dot"></div>(2) Sim, com ajustes</label>
+          <label class="likert-option" onclick="selectLikert(this,'s6q1','1')"><input type="radio" name="s6q1" value="1"><div class="likert-dot"></div>(1) Não</label>
+        </div>
+      </div>
+      <label>Justifique:</label>
+      <textarea id="s6just" placeholder="Sua justificativa..."></textarea>
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goTo(8)">← Voltar</button>
+        <button class="btn btn-primary" onclick="goTo(10)">Próxima Seção →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 10: SEÇÃO 7 -->
+  <div class="form-page" id="page-10">
+    <div class="card">
+      <div class="section-badge">Seção 7 de 8</div>
+      <h1>Sugestões de Aprimoramento do Produto Educacional</h1>
+      <div class="divider"></div>
+      <label>Sugestões relacionadas ao <strong>Conteúdo</strong>:</label>
+      <textarea id="s7conteudo" placeholder="Sugestões sobre o conteúdo..."></textarea>
+      <label>Sugestões relacionadas à <strong>Organização</strong>:</label>
+      <textarea id="s7organizacao" placeholder="Sugestões sobre a organização..."></textarea>
+      <label>Sugestões relacionadas à <strong>Linguagem</strong>:</label>
+      <textarea id="s7linguagem" placeholder="Sugestões sobre a linguagem..."></textarea>
+      <label>Sugestões relacionadas às <strong>Atividades Propostas</strong>:</label>
+      <textarea id="s7atividades" placeholder="Sugestões sobre as atividades..."></textarea>
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goTo(9)">← Voltar</button>
+        <button class="btn btn-primary" onclick="goTo(11)">Próxima Seção →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 11: SEÇÃO 8 -->
+  <div class="form-page" id="page-11">
+    <div class="card">
+      <div class="section-badge">Seção 8 de 8</div>
+      <h1>Apreciação Geral e Potencial de Implementação</h1>
+      <div class="divider"></div>
+      <h3>8.1 Avaliação Geral</h3>
+      <p>Considerando o Produto Educacional em sua totalidade, apresente sua avaliação geral, destacando suas principais contribuições para a formação docente.</p>
+      <label>Comentários e sugestões:</label>
+      <textarea id="s8geral" placeholder="Sua avaliação geral..."></textarea>
+      <div class="divider"></div>
+      <h3>8.2 Potencial de utilização na formação docente</h3>
+      <p>O Produto apresenta potencial para se constituir como instrumento formativo relevante na formação docente, no contexto do Estágio Supervisionado?</p>
+      <div class="likert-group">
+        <div class="likert-options">
+          <label class="likert-option" onclick="selectLikert(this,'s8q2','3')"><input type="radio" name="s8q2" value="3"><div class="likert-dot"></div>(3) Sim, sem necessidade de ajustes</label>
+          <label class="likert-option" onclick="selectLikert(this,'s8q2','2')"><input type="radio" name="s8q2" value="2"><div class="likert-dot"></div>(2) Sim, com necessidade de ajustes</label>
+          <label class="likert-option" onclick="selectLikert(this,'s8q2','1')"><input type="radio" name="s8q2" value="1"><div class="likert-dot"></div>(1) Não recomendaria</label>
+        </div>
+      </div>
+      <label>Justifique sua resposta:</label>
+      <textarea id="s8q2just" placeholder="Sua justificativa..."></textarea>
+      <div class="divider"></div>
+      <h3>8.3 Identificação de lacunas e sugestões de aprimoramento</h3>
+      <p>Você identifica alguma lacuna, limitação ou aspecto que necessita de aprimoramento no Produto Educacional?</p>
+      <div class="likert-group">
+        <div class="likert-options">
+          <label class="likert-option" onclick="selectLikert(this,'s8q3','2');document.getElementById('lacuna-desc').style.display='block'"><input type="radio" name="s8q3" value="2"><div class="likert-dot"></div>(2) Sim</label>
+          <label class="likert-option" onclick="selectLikert(this,'s8q3','1');document.getElementById('lacuna-desc').style.display='none'"><input type="radio" name="s8q3" value="1"><div class="likert-dot"></div>(1) Não</label>
+        </div>
+      </div>
+      <div id="lacuna-desc" style="display:none">
+        <label>Se sim, descreva:</label>
+        <textarea id="s8q3desc" placeholder="Descreva as lacunas identificadas..."></textarea>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goTo(10)">← Voltar</button>
+        <button class="btn btn-accept" onclick="enviarFormulario()">✓ Enviar Avaliação</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 12: FINAL -->
+  <div class="form-page" id="page-12">
+    <div class="card">
+      <div class="final-box">
+        <div class="final-icon">✓</div>
+        <h1>Avaliação Enviada com Sucesso!</h1>
+        <div class="divider"></div>
+        <p style="font-size:16px;color:var(--cinza-escuro);text-align:center">Ao término da pesquisa, as informações serão socializadas.</p>
+        <p style="font-size:15px;text-align:center;margin-top:8px">Agradeço imensamente a sua contribuição para este trabalho de pesquisa.</p>
+        <div class="alert-box" style="text-align:left;margin-top:24px">
+          <strong>Patricia Cristina Formaggi Cavaleiro Navi</strong><br>
+          Doutoranda — PPGEn / UENP<br>
+          <a href="mailto:patricia.formaggi@uenp.edu.br" style="color:var(--verde)">patricia.formaggi@uenp.edu.br</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<script>
+  const TOTAL_PAGES = 12;
+  let currentPage = 1;
+  let tableSelections = {};
+
+  // Build dots
+  const dotsContainer = document.getElementById('stepDots');
+  for (let i = 1; i <= TOTAL_PAGES; i++) {
+    const d = document.createElement('div');
+    d.className = 'step-dot' + (i === 1 ? ' active' : '');
+    d.id = 'dot-' + i;
+    dotsContainer.appendChild(d);
+  }
+
+  function goTo(n) {
+    document.getElementById('page-' + currentPage).classList.remove('active');
+    document.getElementById('dot-' + currentPage).classList.remove('active');
+    document.getElementById('dot-' + currentPage).classList.add('done');
+    currentPage = n;
+    document.getElementById('page-' + n).classList.add('active');
+    document.getElementById('dot-' + n).classList.add('active');
+    document.getElementById('dot-' + n).classList.remove('done');
+    document.getElementById('stepLabel').textContent = 'Etapa ' + n + ' de ' + TOTAL_PAGES;
+    document.getElementById('progressBar').style.width = ((n / TOTAL_PAGES) * 100) + '%';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function selectLikert(el, name, val) {
+    document.querySelectorAll('[onclick*="' + name + '"]').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  function selectCheck(rowId, val, cell) {
+    ['1','2','3'].forEach(v => {
+      const el = document.getElementById(rowId + '_' + v);
+      if (el) el.classList.remove('checked');
+    });
+    const target = document.getElementById(rowId + '_' + val);
+    if (target) target.classList.add('checked');
+    tableSelections[rowId] = val;
+  }
+
+  function toggleArea(el, val) {
+    el.classList.toggle('selected');
+    if (val === 'Outro') {
+      document.getElementById('outraArea').className = 'outro-field' + (el.classList.contains('selected') ? ' show' : '');
+    }
+  }
+
+  function aceitarTCLE() {
+    const nome = document.getElementById('tcle-nome').value.trim();
+    if (!nome) {
+      alert('Por favor, informe seu nome completo para prosseguir.');
+      return;
+    }
+    goTo(3);
+    // Pre-fill avaliador field
+    document.getElementById('avaliador').value = nome;
+  }
+
+  function validarIdentificacao() {
+    const avaliador = document.getElementById('avaliador').value.trim();
+    const instituicao = document.getElementById('instituicao').value.trim();
+    const tempo = document.getElementById('tempo-atuacao').value.trim();
+    const data = document.getElementById('data-avaliacao').value;
+    if (!avaliador || !instituicao || !tempo || !data) {
+      alert('Por favor, preencha todos os campos obrigatórios.');
+      return;
+    }
+    goTo(4);
+  }
+
+  function enviarFormulario() {
+    // Collect all data
+    const data = {
+      timestamp: new Date().toLocaleString('pt-BR'),
+      tcle_nome: document.getElementById('tcle-nome').value,
+      avaliador: document.getElementById('avaliador').value,
+      instituicao: document.getElementById('instituicao').value,
+      tempo_atuacao: document.getElementById('tempo-atuacao').value,
+      area_atuacao: Array.from(document.querySelectorAll('.area-chip.selected')).map(e => e.textContent.trim()).join(', '),
+      outra_area: document.getElementById('outraAreaTexto').value,
+      data_avaliacao: document.getElementById('data-avaliacao').value,
+      s1_identidade: document.querySelector('input[name="s1q1"]:checked')?.value || '',
+      s1_identidade_just: document.getElementById('s1q1just').value,
+      s1_saberes: tableSelections['s1t1'] || '',
+      s1_papel_professor: tableSelections['s1t2'] || '',
+      s1_experiencias: tableSelections['s1t3'] || '',
+      s1_construcao: tableSelections['s1t4'] || '',
+      s1_comentarios: document.getElementById('s1coment').value,
+      s2_clareza: document.querySelector('input[name="s2q1"]:checked')?.value || '',
+      s2_clareza_sug: document.getElementById('s2q1sug').value,
+      s2_pertinencia: document.querySelector('input[name="s2q2"]:checked')?.value || '',
+      s2_pertinencia_sug: document.getElementById('s2q2sug').value,
+      s3_articulacao: document.querySelector('input[name="s3q1"]:checked')?.value || '',
+      s3_articulacao_just: document.getElementById('s3q1just').value,
+      s3_reflexao: tableSelections['s3t1'] || '',
+      s3_coerencia: tableSelections['s3t2'] || '',
+      s3_aplicavel: tableSelections['s3t3'] || '',
+      s3_relevante: tableSelections['s3t4'] || '',
+      s3_sug: document.getElementById('s3sug').value,
+      s4_org_logica: tableSelections['s4t1'] || '',
+      s4_sequencia: tableSelections['s4t2'] || '',
+      s4_estrutura: tableSelections['s4t3'] || '',
+      s4_sug: document.getElementById('s4sug').value,
+      s5_visual: document.querySelector('input[name="s5q1"]:checked')?.value || '',
+      s5_sug: document.getElementById('s5sug').value,
+      s6_viabilidade: document.querySelector('input[name="s6q1"]:checked')?.value || '',
+      s6_just: document.getElementById('s6just').value,
+      s7_conteudo: document.getElementById('s7conteudo').value,
+      s7_organizacao: document.getElementById('s7organizacao').value,
+      s7_linguagem: document.getElementById('s7linguagem').value,
+      s7_atividades: document.getElementById('s7atividades').value,
+      s8_geral: document.getElementById('s8geral').value,
+      s8_potencial: document.querySelector('input[name="s8q2"]:checked')?.value || '',
+      s8_potencial_just: document.getElementById('s8q2just').value,
+      s8_lacunas: document.querySelector('input[name="s8q3"]:checked')?.value || '',
+      s8_lacunas_desc: document.getElementById('s8q3desc').value,
+    };
+
+    // Send to Google Apps Script (replace URL below)
+    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw6seMfm6Ao8sCtVq7_4juNwOcZAQpUloMSOZQCT2xDHfjaFJfkBUOXCP81DQ85cg4p/exec';
+
+    fetch(GOOGLE_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    }).catch(() => {});
+    // Always advance to final page
+    goTo(12);
+  }
+
+  // Set today's date as default
+  const today = new Date().toLocaleDateString('pt-BR');
+  const parts = today.split('/');
+  if (parts.length === 3) {
+    document.getElementById('data-avaliacao').value = parts[2] + '-' + parts[1] + '-' + parts[0];
+  }
+</script>
+</body>
+</html>
